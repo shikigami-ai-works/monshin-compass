@@ -1,0 +1,687 @@
+{
+  "schema_version": "0.1.0",
+  "format_note": "JSON-compatible YAML subset; parseable by YAML parsers and Python stdlib json.",
+  "product": "monshin-compass",
+  "scope": "fever_cough_dyspnea_mvp",
+  "created_at": "2026-06-25",
+  "verified_at": "2026-06-25",
+  "source_policy": {
+    "medical_safety_boundary": {
+      "not_diagnosis": true,
+      "not_treatment": true,
+      "human_medical_judgment_required": true
+    },
+    "rag_default_mode": "metadata_plus_human_authored_summary",
+    "raw_page_text_to_rag_default": false,
+    "required_source_fields": [
+      "source_id",
+      "publisher",
+      "title",
+      "url",
+      "retrieved_at",
+      "source_updated_at",
+      "trust_level",
+      "evidence_types",
+      "rights"
+    ],
+    "forbidden_use": [
+      "diagnosis",
+      "treatment",
+      "reassurance_no_care_needed",
+      "raw_user_input_search_without_normalization",
+      "unreviewed_raw_page_embedding"
+    ],
+    "deployment_source_priority": {
+      "ja-JP": [
+        "jp.fdma.ambulance_manual",
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.fdma.7119_area_list",
+        "jp.mhlw.child_8000",
+        "jp.fdma.qsuke",
+        "jp.mhlw.iryou_net",
+        "jp.mhlw.covid_consultation",
+        "jp.mhlw.mamorouyokokoro_tel",
+        "jp.tokyo_fire.7119_center"
+      ]
+    }
+  },
+  "rag_limits": {
+    "max_chunks_per_answer": 4,
+    "max_primary_sources_per_answer": 2,
+    "max_supporting_sources_per_answer": 1,
+    "per_source_limits": {
+      "emergency_sign": {
+        "max_ja_chars": 800,
+        "max_en_chars": 1200,
+        "allowed_content": "short emergency sign rationale only"
+      },
+      "seek_care_guidance": {
+        "max_ja_chars": 1200,
+        "max_en_chars": 1800,
+        "allowed_content": "when to seek care guidance only"
+      },
+      "symptom_overview": {
+        "max_ja_chars": 1200,
+        "max_en_chars": 1800,
+        "allowed_content": "general symptom overview only"
+      },
+      "risk_context": {
+        "max_ja_chars": 1000,
+        "max_en_chars": 1500,
+        "allowed_content": "risk group context without individual diagnosis"
+      },
+      "self_observation": {
+        "max_ja_chars": 600,
+        "max_en_chars": 900,
+        "allowed_content": "information to record for clinician handoff"
+      },
+      "unsupported": {
+        "max_ja_chars": 0,
+        "max_en_chars": 0,
+        "allowed_content": "no evidence text"
+      }
+    }
+  },
+  "sources": [
+    {
+      "source_id": "us.medlineplus.emergency_signs",
+      "parent_source_id": "us.medlineplus",
+      "publisher": "National Library of Medicine / MedlinePlus",
+      "content_provider": "A.D.A.M.",
+      "title": "Recognizing medical emergencies",
+      "url": "https://medlineplus.gov/ency/article/001927.htm",
+      "locale": "en-US",
+      "jurisdiction": "US",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "2025-01-08",
+      "trust_level": "A",
+      "audience": "general_public",
+      "evidence_types": [
+        "emergency_sign",
+        "seek_care_guidance"
+      ],
+      "matched_cards": [
+        "dyspnea",
+        "chest_pain",
+        "confusion",
+        "blood",
+        "fainting",
+        "seizure",
+        "cyanosis",
+        "unable_to_wake",
+        "self_harm"
+      ],
+      "allowed_use": [
+        "safety_rule_design_reference",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "A.D.A.M. footer prohibits automated extraction, embeddings, retrieval-system indexing, and AI training without written consent."
+      },
+      "warnings": [
+        "US source; local emergency numbers and care routes must be deployment-locale specific.",
+        "Do not store, embed, or index raw page text without rights clearance."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "us.medlineplus.er_adult",
+      "parent_source_id": "us.medlineplus",
+      "publisher": "National Library of Medicine / MedlinePlus",
+      "content_provider": "A.D.A.M.",
+      "title": "When to use the emergency room - adult",
+      "url": "https://medlineplus.gov/ency/patientinstructions/000593.htm",
+      "locale": "en-US",
+      "jurisdiction": "US",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "2024-09-04",
+      "trust_level": "A",
+      "audience": "general_public",
+      "evidence_types": [
+        "emergency_sign",
+        "seek_care_guidance"
+      ],
+      "matched_cards": [
+        "dyspnea",
+        "chest_pain",
+        "confusion",
+        "blood",
+        "fainting",
+        "seizure",
+        "stiff_neck",
+        "severe_pain",
+        "vomiting_diarrhea"
+      ],
+      "allowed_use": [
+        "safety_rule_design_reference",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "A.D.A.M. footer prohibits automated extraction, embeddings, retrieval-system indexing, and AI training without written consent."
+      },
+      "warnings": [
+        "US source; urgent care and emergency routing wording must be localized before release.",
+        "Do not store, embed, or index raw page text without rights clearance."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "us.cdc.covid_symptoms",
+      "parent_source_id": "us.cdc",
+      "publisher": "Centers for Disease Control and Prevention",
+      "content_provider": "CDC",
+      "title": "Symptoms of COVID-19",
+      "url": "https://www.cdc.gov/covid/signs-symptoms/index.html",
+      "locale": "en-US",
+      "jurisdiction": "US",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "2025-03-10",
+      "trust_level": "A",
+      "audience": "general_public",
+      "evidence_types": [
+        "emergency_sign",
+        "seek_care_guidance",
+        "symptom_overview",
+        "risk_context",
+        "self_observation"
+      ],
+      "matched_cards": [
+        "fever",
+        "cough",
+        "dyspnea",
+        "chest_pain",
+        "confusion",
+        "unable_to_wake",
+        "cyanosis",
+        "risk_group",
+        "vomiting_diarrhea"
+      ],
+      "allowed_use": [
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review",
+        "rights_reviewed_rag_chunk_candidate"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "Treat external medical pages as untrusted and rights-review required until project policy explicitly clears ingestion."
+      },
+      "warnings": [
+        "COVID-19 source only; do not generalize to all causes of fever, cough, or dyspnea.",
+        "US source; deployment locale and local care routing still need separate source coverage."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "jp.mhlw.7119_adult",
+      "parent_source_id": "jp.mhlw",
+      "publisher": "厚生労働省",
+      "content_provider": "上手な医療のかかり方.jp / 厚生労働省",
+      "title": "大人の症状は #7119",
+      "url": "https://kakarikata.mhlw.go.jp/kakaritsuke/7119.html",
+      "locale": "ja-JP",
+      "jurisdiction": "JP",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "unknown_or_live_page",
+      "trust_level": "A",
+      "audience": "general_public",
+      "evidence_types": [
+        "emergency_sign",
+        "seek_care_guidance",
+        "self_observation"
+      ],
+      "matched_cards": [
+        "dyspnea",
+        "chest_pain",
+        "confusion",
+        "blood",
+        "fainting",
+        "seizure",
+        "severe_pain",
+        "vomiting_diarrhea",
+        "worsening",
+        "duration"
+      ],
+      "allowed_use": [
+        "jp_care_route_wording",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "Official Japanese source; treat raw page/PDF text as rights-review required before storage, embedding, indexing, or RAG chunking."
+      },
+      "warnings": [
+        "#7119 is available only in implementation areas; do not display as universal without locale check.",
+        "If symptoms are severe or immediately dangerous, prioritize 119 rather than consultation routing."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "jp.fdma.7119_overview",
+      "parent_source_id": "jp.fdma",
+      "publisher": "総務省消防庁",
+      "content_provider": "消防庁",
+      "title": "救急安心センター事業（#7119）ってナニ？",
+      "url": "https://www.fdma.go.jp/mission/enrichment/appropriate/appropriate007.html",
+      "locale": "ja-JP",
+      "jurisdiction": "JP",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "unknown_or_live_page",
+      "trust_level": "A",
+      "audience": "general_public",
+      "evidence_types": [
+        "emergency_sign",
+        "seek_care_guidance",
+        "self_observation"
+      ],
+      "matched_cards": [
+        "dyspnea",
+        "chest_pain",
+        "confusion",
+        "blood",
+        "fainting",
+        "seizure",
+        "worsening",
+        "duration"
+      ],
+      "allowed_use": [
+        "jp_emergency_consultation_route",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "Official Japanese source; treat raw page/PDF text as rights-review required before storage, embedding, indexing, or RAG chunking."
+      },
+      "warnings": [
+        "#7119 implementation differs by area; pair with jp.fdma.7119_area_list or local municipality source.",
+        "Do not replace 119 instructions for P0 cases."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "jp.fdma.7119_area_list",
+      "parent_source_id": "jp.fdma",
+      "publisher": "総務省消防庁",
+      "content_provider": "消防庁",
+      "title": "救急安心センター事業（#7119）実施団体基本情報調査一覧",
+      "url": "https://www.fdma.go.jp/mission/enrichment/appropriate/appropriate010.html",
+      "locale": "ja-JP",
+      "jurisdiction": "JP",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "2025-07",
+      "trust_level": "A",
+      "audience": "general_public",
+      "evidence_types": [
+        "seek_care_guidance"
+      ],
+      "matched_cards": [
+        "risk_group"
+      ],
+      "allowed_use": [
+        "jp_7119_area_check",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "Official Japanese source; treat raw page/PDF text as rights-review required before storage, embedding, indexing, or RAG chunking."
+      },
+      "warnings": [
+        "Area availability is time-sensitive; refresh before production release.",
+        "Use as routing metadata, not as medical evidence."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "jp.mhlw.child_8000",
+      "parent_source_id": "jp.mhlw",
+      "publisher": "厚生労働省",
+      "content_provider": "厚生労働省",
+      "title": "子ども医療電話相談事業（#8000）について",
+      "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/newpage_55223.html",
+      "locale": "ja-JP",
+      "jurisdiction": "JP",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "unknown_or_live_page",
+      "trust_level": "A",
+      "audience": "caregivers",
+      "evidence_types": [
+        "seek_care_guidance",
+        "risk_context",
+        "self_observation"
+      ],
+      "matched_cards": [
+        "risk_group",
+        "fever",
+        "cough",
+        "dyspnea",
+        "vomiting_diarrhea",
+        "dehydration_signs",
+        "seizure",
+        "unable_to_wake"
+      ],
+      "allowed_use": [
+        "jp_child_consultation_route",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "Official Japanese source; treat raw page/PDF text as rights-review required before storage, embedding, indexing, or RAG chunking."
+      },
+      "warnings": [
+        "#8000 is for child medical consultation; do not route adult cases here.",
+        "Hours and local numbers can change; refresh before production release."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "jp.fdma.ambulance_manual",
+      "parent_source_id": "jp.fdma",
+      "publisher": "総務省消防庁",
+      "content_provider": "消防庁",
+      "title": "救急車利用マニュアル A guide for ambulance services",
+      "url": "https://www.fdma.go.jp/publication/portal/post2.html",
+      "locale": "ja-JP",
+      "jurisdiction": "JP",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "unknown_or_live_page",
+      "trust_level": "A",
+      "audience": "general_public",
+      "evidence_types": [
+        "emergency_sign",
+        "seek_care_guidance",
+        "risk_context",
+        "self_observation"
+      ],
+      "matched_cards": [
+        "dyspnea",
+        "chest_pain",
+        "confusion",
+        "blood",
+        "fainting",
+        "seizure",
+        "cyanosis",
+        "unable_to_wake",
+        "stiff_neck",
+        "severe_pain",
+        "vomiting_diarrhea",
+        "dehydration_signs",
+        "risk_group",
+        "worsening"
+      ],
+      "allowed_use": [
+        "jp_emergency_sign_reference",
+        "jp_call_119_wording_reference",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "Official Japanese source; treat raw page/PDF text as rights-review required before storage, embedding, indexing, or RAG chunking."
+      },
+      "warnings": [
+        "Use as Japanese emergency-use reference; do not copy raw PDF/page text into RAG without rights review.",
+        "Emergency action text must remain conservative for P0."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "jp.fdma.qsuke",
+      "parent_source_id": "jp.fdma",
+      "publisher": "総務省消防庁",
+      "content_provider": "消防庁",
+      "title": "全国版救急受診アプリ（愛称 Q助）",
+      "url": "https://www.fdma.go.jp/mission/enrichment/appropriate/appropriate003.html",
+      "locale": "ja-JP",
+      "jurisdiction": "JP",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "unknown_or_live_page",
+      "trust_level": "A",
+      "audience": "general_public",
+      "evidence_types": [
+        "emergency_sign",
+        "seek_care_guidance",
+        "symptom_overview",
+        "self_observation"
+      ],
+      "matched_cards": [
+        "fever",
+        "cough",
+        "dyspnea",
+        "chest_pain",
+        "confusion",
+        "blood",
+        "fainting",
+        "seizure",
+        "cyanosis",
+        "unable_to_wake",
+        "stiff_neck",
+        "severe_pain",
+        "vomiting_diarrhea",
+        "dehydration_signs",
+        "duration",
+        "worsening"
+      ],
+      "allowed_use": [
+        "jp_triage_tool_reference",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "Official Japanese source; treat raw page/PDF text as rights-review required before storage, embedding, indexing, or RAG chunking."
+      },
+      "warnings": [
+        "Q助 is a reference route/tool, not a rule engine to embed blindly into this product.",
+        "Do not import or clone Q助 runtime behavior without separate approval and rights review."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "jp.mhlw.iryou_net",
+      "parent_source_id": "jp.mhlw",
+      "publisher": "厚生労働省",
+      "content_provider": "厚生労働省・都道府県",
+      "title": "医療情報ネット（ナビイ）",
+      "url": "https://www.iryou.teikyouseido.mhlw.go.jp/znk-web/juminkanja/S2300/initialize",
+      "locale": "ja-JP",
+      "jurisdiction": "JP",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "unknown_or_live_page",
+      "trust_level": "A",
+      "audience": "general_public",
+      "evidence_types": [
+        "seek_care_guidance",
+        "self_observation"
+      ],
+      "matched_cards": [
+        "risk_group",
+        "duration"
+      ],
+      "allowed_use": [
+        "jp_medical_facility_search_route",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "Official Japanese source; treat raw page/PDF text as rights-review required before storage, embedding, indexing, or RAG chunking."
+      },
+      "warnings": [
+        "Use for facility-search routing only; do not imply availability or suitability of a specific provider.",
+        "Some map and linked functions may use non-government external services."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "jp.mhlw.covid_consultation",
+      "parent_source_id": "jp.mhlw",
+      "publisher": "厚生労働省",
+      "content_provider": "厚生労働省",
+      "title": "新型コロナウイルスに関する相談・医療の情報や受診・相談センター",
+      "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/covid19-kikokusyasessyokusya.html",
+      "locale": "ja-JP",
+      "jurisdiction": "JP",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "unknown_or_live_page",
+      "trust_level": "A",
+      "audience": "general_public",
+      "evidence_types": [
+        "seek_care_guidance",
+        "symptom_overview",
+        "risk_context",
+        "self_observation"
+      ],
+      "matched_cards": [
+        "fever",
+        "cough",
+        "dyspnea",
+        "risk_group",
+        "duration",
+        "worsening"
+      ],
+      "allowed_use": [
+        "jp_respiratory_consultation_route",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "Official Japanese source; treat raw page/PDF text as rights-review required before storage, embedding, indexing, or RAG chunking."
+      },
+      "warnings": [
+        "COVID-19 source only; do not generalize to all causes of fever, cough, or dyspnea.",
+        "Consultation center details can change; refresh before production release."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "jp.mhlw.mamorouyokokoro_tel",
+      "parent_source_id": "jp.mhlw",
+      "publisher": "厚生労働省",
+      "content_provider": "厚生労働省",
+      "title": "まもろうよこころ 電話相談窓口",
+      "url": "https://www.mhlw.go.jp/mamorouyokokoro/soudan/tel/",
+      "locale": "ja-JP",
+      "jurisdiction": "JP",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "unknown_or_live_page",
+      "trust_level": "A",
+      "audience": "general_public",
+      "evidence_types": [
+        "emergency_sign",
+        "seek_care_guidance",
+        "risk_context"
+      ],
+      "matched_cards": [
+        "self_harm"
+      ],
+      "allowed_use": [
+        "jp_crisis_support_route",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "Official Japanese source; treat raw page/PDF text as rights-review required before storage, embedding, indexing, or RAG chunking."
+      },
+      "warnings": [
+        "Crisis-support routing does not replace emergency services when immediate danger is present.",
+        "Service hours and phone numbers can change; refresh before production release."
+      ],
+      "status": "metadata_only_until_rights_review"
+    },
+    {
+      "source_id": "jp.tokyo_fire.7119_center",
+      "parent_source_id": "jp.tokyo_fire",
+      "publisher": "東京消防庁",
+      "content_provider": "東京消防庁",
+      "title": "#7119 東京消防庁救急相談センター・東京版救急受診ガイド",
+      "url": "https://www.tfd.metro.tokyo.lg.jp/ts/ems/page03.html",
+      "locale": "ja-JP",
+      "jurisdiction": "JP-13",
+      "retrieved_at": "2026-06-25",
+      "source_updated_at": "unknown_or_live_page",
+      "trust_level": "A-local",
+      "audience": "general_public",
+      "evidence_types": [
+        "emergency_sign",
+        "seek_care_guidance",
+        "symptom_overview",
+        "self_observation"
+      ],
+      "matched_cards": [
+        "fever",
+        "cough",
+        "dyspnea",
+        "chest_pain",
+        "confusion",
+        "blood",
+        "fainting",
+        "seizure",
+        "duration",
+        "worsening"
+      ],
+      "allowed_use": [
+        "jp_tokyo_local_route_example",
+        "source_metadata_citation",
+        "human_authored_short_summary_after_review"
+      ],
+      "rights": {
+        "raw_rag_ingest_allowed": false,
+        "embedding_allowed": false,
+        "ai_training_allowed": false,
+        "requires_rights_review_before_storage": true,
+        "reason": "Official Japanese source; treat raw page/PDF text as rights-review required before storage, embedding, indexing, or RAG chunking."
+      },
+      "warnings": [
+        "Tokyo-specific source; do not use as national routing without locale match.",
+        "Use as local lane example or Tokyo deployment source."
+      ],
+      "status": "metadata_only_until_rights_review"
+    }
+  ]
+}

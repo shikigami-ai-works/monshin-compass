@@ -1,0 +1,111 @@
+{
+  "schema_version": "0.1.0",
+  "format_note": "JSON-compatible YAML subset; parseable by YAML parsers and Python stdlib json.",
+  "product": "monshin-compass",
+  "scope": "jp_emergency_consultation_routing",
+  "created_at": "2026-06-25",
+  "verified_at": "2026-06-25",
+  "policy": {
+    "emergency_phone": "119",
+    "p0_overrides_consultation": true,
+    "display_7119_only_when_confirmed": true,
+    "unknown_locale_behavior": "do_not_display_7119_directly",
+    "area_list_source_id": "jp.fdma.7119_area_list",
+    "national_consultation_source_ids": [
+      "jp.mhlw.7119_adult",
+      "jp.fdma.7119_overview",
+      "jp.fdma.7119_area_list"
+    ],
+    "fallback_source_ids": [
+      "jp.fdma.ambulance_manual",
+      "jp.fdma.qsuke",
+      "jp.mhlw.iryou_net"
+    ],
+    "forbidden_output": [
+      "diagnosis",
+      "treatment",
+      "reassurance_no_care_needed",
+      "display_7119_as_nationwide_without_locale_check"
+    ]
+  },
+  "routes": [
+    {
+      "route_id": "jp-default",
+      "deployment_locale": "JP",
+      "aliases": [
+        "ja-JP",
+        "JP-unknown",
+        "unknown",
+        "default"
+      ],
+      "jurisdiction": "JP",
+      "jurisdiction_label_ja": "日本（地域未特定）",
+      "consultation_7119_status": "unknown_must_check_area_list",
+      "show_7119_direct": false,
+      "consultation_phone": null,
+      "local_source_ids": [],
+      "area_check_source_id": "jp.fdma.7119_area_list",
+      "fallback_source_ids": [
+        "jp.fdma.ambulance_manual",
+        "jp.fdma.qsuke",
+        "jp.mhlw.iryou_net"
+      ],
+      "warnings": [
+        "#7119 is not guaranteed nationwide. Check the FDMA area list before displaying #7119.",
+        "For P0 or immediate danger, route to 119 regardless of #7119 availability."
+      ]
+    },
+    {
+      "route_id": "jp-tokyo",
+      "deployment_locale": "JP-13",
+      "aliases": [
+        "Tokyo",
+        "tokyo",
+        "東京都",
+        "東京",
+        "ja-JP-Tokyo"
+      ],
+      "jurisdiction": "JP-13",
+      "jurisdiction_label_ja": "東京都",
+      "consultation_7119_status": "confirmed_local",
+      "show_7119_direct": true,
+      "consultation_phone": "#7119",
+      "local_source_ids": [
+        "jp.tokyo_fire.7119_center"
+      ],
+      "area_check_source_id": "jp.fdma.7119_area_list",
+      "fallback_source_ids": [
+        "jp.fdma.ambulance_manual",
+        "jp.fdma.qsuke",
+        "jp.mhlw.iryou_net"
+      ],
+      "warnings": [
+        "Tokyo-specific #7119 route. Do not reuse for non-Tokyo deployments.",
+        "For P0 or immediate danger, route to 119 before #7119."
+      ]
+    }
+  ],
+  "special_routes": {
+    "child": {
+      "route_id": "jp-child-8000",
+      "consultation_phone": "#8000",
+      "source_id": "jp.mhlw.child_8000",
+      "show_when_risk_group_values": [
+        "child"
+      ],
+      "warnings": [
+        "#8000 is for child medical consultation. Do not route adult cases here.",
+        "Hours and available routes can vary by prefecture."
+      ]
+    },
+    "self_harm": {
+      "route_id": "jp-self-harm-support",
+      "source_id": "jp.mhlw.mamorouyokokoro_tel",
+      "show_when_card_id": "self_harm",
+      "warnings": [
+        "Crisis support does not replace 119 when immediate danger is present.",
+        "Service hours and phone numbers can change; refresh before production release."
+      ]
+    }
+  }
+}

@@ -1,0 +1,2023 @@
+{
+  "schema_version": "0.1.0",
+  "format_note": "JSON-compatible YAML subset; parseable by YAML parsers and Python stdlib json.",
+  "locale": "ja-JP",
+  "product": "monshin-compass",
+  "scope": "fever_cough_dyspnea_mvp",
+  "allowed_evidence_types": [
+    "emergency_sign",
+    "seek_care_guidance",
+    "symptom_overview",
+    "risk_context",
+    "self_observation",
+    "unsupported"
+  ],
+  "question_flow": {
+    "max_questions_per_step": 2,
+    "default_questions_per_step": 1,
+    "first_screen_cards": [
+      "fever",
+      "cough",
+      "dyspnea"
+    ],
+    "always_available_button": "emergency_symptoms",
+    "next_question_priority": [
+      "dyspnea",
+      "chest_pain",
+      "confusion",
+      "blood",
+      "cyanosis",
+      "stiff_neck",
+      "risk_group",
+      "duration",
+      "worsening"
+    ],
+    "stop_conditions": [
+      {
+        "matched_priority": "P0",
+        "action": "show_p0_output"
+      },
+      {
+        "matched_priority": "P1",
+        "action": "show_p1_output_after_minimum_summary"
+      },
+      {
+        "answered_cards_count_gte": 6,
+        "action": "summarize_without_more_questions"
+      },
+      {
+        "user_selects_unknown_repeatedly": true,
+        "action": "show_unanswerable_template"
+      }
+    ]
+  },
+  "cards": [
+    {
+      "card_id": "fever",
+      "status": "active",
+      "category": "primary",
+      "ui": {
+        "label_ja": "熱っぽい",
+        "short_label_ja": "発熱",
+        "group": "respiratory",
+        "sort_order": 10,
+        "visible_default": true,
+        "illustration_key": "thermometer_forehead_red",
+        "icon_hint": "体温計と赤い額",
+        "accessibility_label_ja": "熱っぽさ、発熱の症状カード",
+        "helper_text_ja": "体温が分からなくても選べます。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "yes",
+            "label_ja": "ある",
+            "severity_rank": 1,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "no",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 1,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 20,
+        "initial_prompt_ja": "熱っぽさや発熱はありますか？",
+        "followup_prompt_ja": "体温や熱っぽさはありますか？",
+        "answer_style": "yes_no_unknown",
+        "max_visible_options": 3,
+        "ask_when": {
+          "any_selected": [],
+          "missing_if": []
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "発熱",
+          "熱っぽい",
+          "体温"
+        ],
+        "normalized_terms_en": [
+          "fever",
+          "elevated temperature"
+        ],
+        "blocked_terms": [
+          "解熱剤の用量",
+          "抗生物質"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P1-TROUBLE-BREATHING-WITH-FEVER",
+          "RF-P1-FEVER-STIFF-NECK",
+          "RF-P1-HIGH-FEVER-WORSENING",
+          "RF-P2-FEVER-COUGH-DURATION",
+          "RF-P2-RISK-GROUP-FEVER-COUGH",
+          "RF-P2-FEVER-UNKNOWN-DURATION"
+        ],
+        "safety_question": false
+      },
+      "retrieval": {
+        "evidence_types": [
+          "seek_care_guidance",
+          "symptom_overview",
+          "self_observation"
+        ],
+        "source_hints": [
+          "us.medlineplus",
+          "us.cdc",
+          "jp.mhlw"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "cough",
+      "status": "active",
+      "category": "primary",
+      "ui": {
+        "label_ja": "咳が出る",
+        "short_label_ja": "咳",
+        "group": "respiratory",
+        "sort_order": 20,
+        "visible_default": true,
+        "illustration_key": "cough_mouth_motion",
+        "icon_hint": "口元と咳の動き",
+        "accessibility_label_ja": "咳の症状カード",
+        "helper_text_ja": "乾いた咳、痰がからむ咳のどちらでも選べます。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "yes",
+            "label_ja": "ある",
+            "severity_rank": 1,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "no",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 1,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 30,
+        "initial_prompt_ja": "咳はありますか？",
+        "followup_prompt_ja": "咳や痰はありますか？",
+        "answer_style": "yes_no_unknown",
+        "max_visible_options": 3,
+        "ask_when": {
+          "any_selected": [],
+          "missing_if": []
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "咳",
+          "せき",
+          "痰"
+        ],
+        "normalized_terms_en": [
+          "cough",
+          "sputum"
+        ],
+        "blocked_terms": [
+          "咳止めの用量",
+          "抗生物質"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P1-BLOOD-SPUTUM-VOMIT",
+          "RF-P2-FEVER-COUGH-DURATION",
+          "RF-P2-RISK-GROUP-FEVER-COUGH",
+          "RF-P3-MILD-FEVER-COUGH"
+        ],
+        "safety_question": false
+      },
+      "retrieval": {
+        "evidence_types": [
+          "seek_care_guidance",
+          "symptom_overview",
+          "self_observation"
+        ],
+        "source_hints": [
+          "us.medlineplus",
+          "us.cdc",
+          "jp.mhlw"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "dyspnea",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "息苦しい",
+        "short_label_ja": "息苦しさ",
+        "group": "emergency",
+        "sort_order": 30,
+        "visible_default": true,
+        "illustration_key": "chest_breathing_difficulty",
+        "icon_hint": "胸を押さえる人と呼吸線",
+        "accessibility_label_ja": "息苦しさ、呼吸のつらさの症状カード",
+        "helper_text_ja": "少しでも息がしづらい場合は選んでください。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "none",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "mild",
+            "label_ja": "少しある",
+            "severity_rank": 2,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "moderate",
+            "label_ja": "はっきりある",
+            "severity_rank": 3,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "severe",
+            "label_ja": "かなり強い",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 1,
+        "initial_prompt_ja": "息苦しさはありますか？",
+        "followup_prompt_ja": "息苦しさの強さを選んでください。",
+        "answer_style": "severity_scale",
+        "max_visible_options": 5,
+        "ask_when": {
+          "any_selected": [
+            "fever",
+            "cough"
+          ],
+          "missing_if": [
+            "dyspnea=unknown"
+          ]
+        },
+        "skip_allowed": false
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "息苦しさ",
+          "呼吸困難",
+          "呼吸がつらい"
+        ],
+        "normalized_terms_en": [
+          "shortness of breath",
+          "trouble breathing",
+          "difficulty breathing"
+        ],
+        "blocked_terms": [
+          "酸素投与",
+          "吸入薬の用量"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P0-DYSPNEA-SEVERE",
+          "RF-P1-DYSPNEA-MODERATE",
+          "RF-P1-TROUBLE-BREATHING-WITH-FEVER",
+          "RF-P1-RISK-GROUP-WITH-DYSPNEA",
+          "RF-P2-MILD-DYSPNEA",
+          "RF-P2-UNKNOWN-SAFETY-CARDS"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "emergency_sign",
+          "seek_care_guidance"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs",
+          "us.medlineplus.er_adult",
+          "us.cdc.covid_symptoms"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "chest_pain",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "胸が痛い",
+        "short_label_ja": "胸痛",
+        "group": "emergency",
+        "sort_order": 40,
+        "visible_default": false,
+        "illustration_key": "chest_pain_mark",
+        "icon_hint": "胸部と痛みマーク",
+        "accessibility_label_ja": "胸の痛みや圧迫感の確認カード",
+        "helper_text_ja": "痛み、圧迫感、締めつけ感を含みます。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "no",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "mild",
+            "label_ja": "少し痛い",
+            "severity_rank": 2,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "moderate",
+            "label_ja": "はっきり痛い",
+            "severity_rank": 3,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "severe",
+            "label_ja": "強い痛み",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "pressure",
+            "label_ja": "圧迫感・締めつけ",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 2,
+        "initial_prompt_ja": "胸の痛みや圧迫感はありますか？",
+        "followup_prompt_ja": "胸の痛みや圧迫感の強さを選んでください。",
+        "answer_style": "severity_scale",
+        "max_visible_options": 6,
+        "ask_when": {
+          "any_selected": [
+            "dyspnea",
+            "cough"
+          ],
+          "missing_if": [
+            "chest_pain=unknown"
+          ]
+        },
+        "skip_allowed": false
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "胸痛",
+          "胸の痛み",
+          "胸の圧迫感"
+        ],
+        "normalized_terms_en": [
+          "chest pain",
+          "chest discomfort",
+          "chest pressure"
+        ],
+        "blocked_terms": [
+          "心筋梗塞診断",
+          "ニトログリセリン用量"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P0-CHEST-SEVERE",
+          "RF-P0-FAINTING",
+          "RF-P1-CHEST-MODERATE",
+          "RF-P2-UNKNOWN-SAFETY-CARDS"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "emergency_sign",
+          "seek_care_guidance"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs",
+          "us.medlineplus.er_adult"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "confusion",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "ぼんやりする",
+        "short_label_ja": "意識変化",
+        "group": "emergency",
+        "sort_order": 50,
+        "visible_default": false,
+        "illustration_key": "head_confusion_mark",
+        "icon_hint": "頭部と混乱マーク",
+        "accessibility_label_ja": "意識がぼんやりする、普段と様子が違う確認カード",
+        "helper_text_ja": "受け答えが変、起きにくい、普段と違う様子を含みます。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "yes",
+            "label_ja": "ある",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "no",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 3,
+        "initial_prompt_ja": "意識がぼんやりする、受け答えが普段と違う感じはありますか？",
+        "followup_prompt_ja": "急にぼんやりしたり、普段と様子が違ったりしますか？",
+        "answer_style": "yes_no_unknown",
+        "max_visible_options": 3,
+        "ask_when": {
+          "any_selected": [
+            "fever",
+            "dyspnea"
+          ],
+          "missing_if": [
+            "confusion=unknown"
+          ]
+        },
+        "skip_allowed": false
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "意識変化",
+          "混乱",
+          "ぼんやりする"
+        ],
+        "normalized_terms_en": [
+          "confusion",
+          "change in mental status",
+          "difficulty arousing"
+        ],
+        "blocked_terms": [
+          "認知症診断"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P0-CONFUSION-ACUTE",
+          "RF-P0-FAINTING",
+          "RF-P0-SUDDEN-NEURO",
+          "RF-P2-UNKNOWN-SAFETY-CARDS"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "emergency_sign"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "blood",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "血が混じる",
+        "short_label_ja": "血",
+        "group": "emergency",
+        "sort_order": 60,
+        "visible_default": false,
+        "illustration_key": "red_drop_cough_vomit",
+        "icon_hint": "赤いしずくと咳・嘔吐の記号",
+        "accessibility_label_ja": "咳、痰、吐いたものに血が混じる確認カード",
+        "helper_text_ja": "咳や痰、吐いたもの、出血が止まらない場合を含みます。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "none",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "sputum",
+            "label_ja": "痰や咳に少し混じる",
+            "severity_rank": 3,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "vomit",
+            "label_ja": "吐いたものに混じる",
+            "severity_rank": 3,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "heavy",
+            "label_ja": "多い・止まらない",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 4,
+        "initial_prompt_ja": "咳や痰、吐いたものに血が混じりますか？",
+        "followup_prompt_ja": "血が混じる場合、どの程度ですか？",
+        "answer_style": "segmented",
+        "max_visible_options": 5,
+        "ask_when": {
+          "any_selected": [
+            "cough",
+            "vomiting_diarrhea"
+          ],
+          "missing_if": [
+            "blood=unknown"
+          ]
+        },
+        "skip_allowed": false
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "血痰",
+          "吐血",
+          "出血"
+        ],
+        "normalized_terms_en": [
+          "coughing blood",
+          "vomiting blood",
+          "bleeding"
+        ],
+        "blocked_terms": [
+          "止血手技",
+          "薬の用量"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P0-BLOOD-HEAVY",
+          "RF-P1-BLOOD-SPUTUM-VOMIT",
+          "RF-P2-UNKNOWN-SAFETY-CARDS"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "emergency_sign",
+          "seek_care_guidance"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs",
+          "us.medlineplus.er_adult"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "sudden_onset",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "急に始まった",
+        "short_label_ja": "急な発症",
+        "group": "emergency",
+        "sort_order": 70,
+        "visible_default": false,
+        "illustration_key": "clock_lightning",
+        "icon_hint": "時計と稲妻",
+        "accessibility_label_ja": "症状が急に始まったかの確認カード",
+        "helper_text_ja": "いつもと違う急な変化を拾うための確認です。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "yes",
+            "label_ja": "急に始まった",
+            "severity_rank": 3,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "no",
+            "label_ja": "徐々に",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 1,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 7,
+        "initial_prompt_ja": "症状は急に始まりましたか？",
+        "followup_prompt_ja": "急に悪くなった感じはありますか？",
+        "answer_style": "yes_no_unknown",
+        "max_visible_options": 3,
+        "ask_when": {
+          "any_selected": [
+            "dyspnea",
+            "chest_pain",
+            "confusion",
+            "severe_pain"
+          ],
+          "missing_if": []
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "急な発症",
+          "急な悪化",
+          "突然"
+        ],
+        "normalized_terms_en": [
+          "sudden onset",
+          "sudden worsening"
+        ],
+        "blocked_terms": [
+          "病名確定"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P0-CONFUSION-ACUTE",
+          "RF-P0-SUDDEN-NEURO"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "emergency_sign",
+          "seek_care_guidance"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "cyanosis",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "顔色や唇が変",
+        "short_label_ja": "顔色・唇",
+        "group": "emergency",
+        "sort_order": 80,
+        "visible_default": false,
+        "illustration_key": "lips_color_change",
+        "icon_hint": "唇と色変化のスウォッチ",
+        "accessibility_label_ja": "唇や顔色が青い、灰色、白っぽい確認カード",
+        "helper_text_ja": "肌色差があるため、青い・灰色・白っぽいなど幅を持たせます。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "yes",
+            "label_ja": "ある",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "no",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 5,
+        "initial_prompt_ja": "唇や顔色が青い、灰色、白っぽい感じはありますか？",
+        "followup_prompt_ja": "顔色や唇の色が普段と大きく違いますか？",
+        "answer_style": "yes_no_unknown",
+        "max_visible_options": 3,
+        "ask_when": {
+          "any_selected": [
+            "dyspnea"
+          ],
+          "missing_if": []
+        },
+        "skip_allowed": false
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "チアノーゼ",
+          "顔色が悪い",
+          "唇が青い"
+        ],
+        "normalized_terms_en": [
+          "cyanosis",
+          "bluish lips",
+          "gray skin color"
+        ],
+        "blocked_terms": [
+          "皮膚疾患診断"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": "P0",
+        "connected_rule_ids": [
+          "RF-P0-CYANOSIS"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "emergency_sign"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "unable_to_wake",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "起きない・反応が弱い",
+        "short_label_ja": "反応が弱い",
+        "group": "emergency",
+        "sort_order": 90,
+        "visible_default": false,
+        "illustration_key": "person_unresponsive",
+        "icon_hint": "横になった人と反応マーク",
+        "accessibility_label_ja": "起きない、反応が弱い確認カード",
+        "helper_text_ja": "呼びかけへの反応が弱い場合を含みます。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "yes",
+            "label_ja": "ある",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "no",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 3,
+        "initial_prompt_ja": "起きない、反応が弱い感じはありますか？",
+        "followup_prompt_ja": "呼びかけへの反応は普段どおりですか？",
+        "answer_style": "yes_no_unknown",
+        "max_visible_options": 3,
+        "ask_when": {
+          "any_selected": [
+            "confusion",
+            "fever"
+          ],
+          "missing_if": []
+        },
+        "skip_allowed": false
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "反応が弱い",
+          "起きない",
+          "意識がない"
+        ],
+        "normalized_terms_en": [
+          "difficulty arousing",
+          "unresponsive",
+          "unconsciousness"
+        ],
+        "blocked_terms": [
+          "原因診断"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": "P0",
+        "connected_rule_ids": [
+          "RF-P0-UNABLE-WAKE"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "emergency_sign"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "fainting",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "失神・倒れた",
+        "short_label_ja": "失神",
+        "group": "emergency",
+        "sort_order": 100,
+        "visible_default": false,
+        "illustration_key": "person_fainting",
+        "icon_hint": "倒れる人",
+        "accessibility_label_ja": "失神、倒れた確認カード",
+        "helper_text_ja": "一時的に意識を失った場合を含みます。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "yes",
+            "label_ja": "ある",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "no",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 6,
+        "initial_prompt_ja": "失神した、倒れた、意識を失ったことはありますか？",
+        "followup_prompt_ja": "倒れた時に息苦しさや胸痛はありましたか？",
+        "answer_style": "yes_no_unknown",
+        "max_visible_options": 3,
+        "ask_when": {
+          "any_selected": [
+            "dyspnea",
+            "chest_pain",
+            "confusion"
+          ],
+          "missing_if": []
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "失神",
+          "意識消失",
+          "倒れた"
+        ],
+        "normalized_terms_en": [
+          "fainting",
+          "loss of consciousness"
+        ],
+        "blocked_terms": [
+          "原因診断"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P0-FAINTING"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "emergency_sign"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "seizure",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "けいれん",
+        "short_label_ja": "けいれん",
+        "group": "emergency",
+        "sort_order": 110,
+        "visible_default": false,
+        "illustration_key": "seizure_body_motion",
+        "icon_hint": "体の震えの記号",
+        "accessibility_label_ja": "けいれんの確認カード",
+        "helper_text_ja": "長い、繰り返す、初めてのけいれんを安全側に扱います。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "none",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "brief",
+            "label_ja": "短く1回",
+            "severity_rank": 3,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "prolonged",
+            "label_ja": "長い",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "repeated",
+            "label_ja": "繰り返す",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 6,
+        "initial_prompt_ja": "けいれんはありますか？",
+        "followup_prompt_ja": "けいれんは長い、または繰り返していますか？",
+        "answer_style": "segmented",
+        "max_visible_options": 5,
+        "ask_when": {
+          "any_selected": [
+            "fever",
+            "confusion"
+          ],
+          "missing_if": []
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "けいれん",
+          "発作"
+        ],
+        "normalized_terms_en": [
+          "seizure",
+          "convulsion"
+        ],
+        "blocked_terms": [
+          "抗けいれん薬の用量"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P0-SEIZURE-PROLONGED"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "emergency_sign"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "stiff_neck",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "首が硬い・強い頭痛",
+        "short_label_ja": "首・頭痛",
+        "group": "emergency",
+        "sort_order": 120,
+        "visible_default": false,
+        "illustration_key": "neck_headache_warning",
+        "icon_hint": "首と頭痛マーク",
+        "accessibility_label_ja": "首の硬さや強い頭痛の確認カード",
+        "helper_text_ja": "発熱と一緒にある場合は早めの相談に寄せます。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "yes",
+            "label_ja": "ある",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "no",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 6,
+        "initial_prompt_ja": "発熱と一緒に強い頭痛や首の硬さがありますか？",
+        "followup_prompt_ja": "首を動かしづらい、強い頭痛がありますか？",
+        "answer_style": "yes_no_unknown",
+        "max_visible_options": 3,
+        "ask_when": {
+          "any_selected": [
+            "fever"
+          ],
+          "missing_if": []
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "首の硬さ",
+          "強い頭痛",
+          "項部硬直"
+        ],
+        "normalized_terms_en": [
+          "stiff neck",
+          "severe headache"
+        ],
+        "blocked_terms": [
+          "髄膜炎診断"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P1-FEVER-STIFF-NECK"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "seek_care_guidance",
+          "emergency_sign"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "severe_pain",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "強い痛み",
+        "short_label_ja": "強い痛み",
+        "group": "emergency",
+        "sort_order": 130,
+        "visible_default": false,
+        "illustration_key": "severe_pain_flash",
+        "icon_hint": "痛みの稲妻",
+        "accessibility_label_ja": "強い痛み、突然の強い痛みの確認カード",
+        "helper_text_ja": "部位マップ追加までの暫定カードです。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "none",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "local",
+            "label_ja": "局所の痛み",
+            "severity_rank": 2,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "severe",
+            "label_ja": "強い痛み",
+            "severity_rank": 3,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "sudden_severe",
+            "label_ja": "突然の強い痛み",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 6,
+        "initial_prompt_ja": "強い痛み、または突然の強い痛みはありますか？",
+        "followup_prompt_ja": "痛みの強さを選んでください。",
+        "answer_style": "severity_scale",
+        "max_visible_options": 5,
+        "ask_when": {
+          "any_selected": [
+            "fever",
+            "sudden_onset"
+          ],
+          "missing_if": []
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "強い痛み",
+          "突然の痛み"
+        ],
+        "normalized_terms_en": [
+          "severe pain",
+          "sudden severe pain"
+        ],
+        "blocked_terms": [
+          "鎮痛薬の用量"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P0-SUDDEN-NEURO",
+          "RF-P1-SEVERE-PAIN"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "emergency_sign",
+          "seek_care_guidance"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "vomiting_diarrhea",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "嘔吐・下痢が続く",
+        "short_label_ja": "嘔吐・下痢",
+        "group": "emergency",
+        "sort_order": 140,
+        "visible_default": false,
+        "illustration_key": "vomiting_diarrhea_warning",
+        "icon_hint": "胃腸と水分マーク",
+        "accessibility_label_ja": "嘔吐や下痢が続く確認カード",
+        "helper_text_ja": "脱水リスクと接続します。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "none",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "mild",
+            "label_ja": "少し",
+            "severity_rank": 1,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "persistent",
+            "label_ja": "続いている",
+            "severity_rank": 3,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "severe",
+            "label_ja": "強い",
+            "severity_rank": 3,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 9,
+        "initial_prompt_ja": "嘔吐や下痢が続いていますか？",
+        "followup_prompt_ja": "水分が取れないほど続いていますか？",
+        "answer_style": "segmented",
+        "max_visible_options": 5,
+        "ask_when": {
+          "any_selected": [
+            "fever"
+          ],
+          "missing_if": []
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "嘔吐",
+          "下痢",
+          "吐き気"
+        ],
+        "normalized_terms_en": [
+          "vomiting",
+          "diarrhea",
+          "nausea"
+        ],
+        "blocked_terms": [
+          "下痢止めの用量"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P1-PERSISTENT-VOMIT-DIARRHEA"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "seek_care_guidance",
+          "self_observation"
+        ],
+        "source_hints": [
+          "us.medlineplus.emergency_signs",
+          "us.medlineplus.er_adult"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "dehydration_signs",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "水分が取れない・尿が少ない",
+        "short_label_ja": "脱水サイン",
+        "group": "emergency",
+        "sort_order": 145,
+        "visible_default": false,
+        "illustration_key": "water_drop_low",
+        "icon_hint": "水滴と注意マーク",
+        "accessibility_label_ja": "水分が取れない、尿が少ない確認カード",
+        "helper_text_ja": "脱水が疑われる状態を拾います。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "yes",
+            "label_ja": "ある",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "no",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 9,
+        "initial_prompt_ja": "水分が取れない、尿が少ない感じはありますか？",
+        "followup_prompt_ja": "脱水が心配なサインはありますか？",
+        "answer_style": "yes_no_unknown",
+        "max_visible_options": 3,
+        "ask_when": {
+          "any_selected": [
+            "vomiting_diarrhea",
+            "fever"
+          ],
+          "missing_if": []
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "脱水",
+          "水分が取れない",
+          "尿が少ない"
+        ],
+        "normalized_terms_en": [
+          "dehydration",
+          "unable to drink",
+          "decreased urination"
+        ],
+        "blocked_terms": [
+          "点滴の要否断定"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P1-DEHYDRATION"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "seek_care_guidance",
+          "self_observation"
+        ],
+        "source_hints": [
+          "us.medlineplus.er_adult"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "risk_group",
+      "status": "active",
+      "category": "risk",
+      "ui": {
+        "label_ja": "小児・高齢・妊娠・持病あり",
+        "short_label_ja": "リスク背景",
+        "group": "risk",
+        "sort_order": 150,
+        "visible_default": false,
+        "illustration_key": "family_pregnancy_chronic_condition",
+        "icon_hint": "家族、妊娠、医療カードの組み合わせ",
+        "accessibility_label_ja": "小児、高齢、妊娠、持病、免疫低下などの背景確認カード",
+        "helper_text_ja": "当てはまる場合、受診相談の優先度を上げます。"
+      },
+      "input": {
+        "value_type": "multi_enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "none",
+            "label_ja": "当てはまらない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "child",
+            "label_ja": "小児",
+            "severity_rank": 2,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "older_adult",
+            "label_ja": "高齢",
+            "severity_rank": 2,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "pregnant",
+            "label_ja": "妊娠中・可能性あり",
+            "severity_rank": 2,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "chronic_condition",
+            "label_ja": "持病あり",
+            "severity_rank": 2,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "immunocompromised",
+            "label_ja": "免疫低下",
+            "severity_rank": 2,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "multiple",
+            "label_ja": "複数あり",
+            "severity_rank": 3,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 1,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 8,
+        "initial_prompt_ja": "小児、高齢、妊娠、持病、免疫低下に当てはまりますか？",
+        "followup_prompt_ja": "注意が必要な背景に当てはまるものはありますか？",
+        "answer_style": "card_grid",
+        "max_visible_options": 8,
+        "ask_when": {
+          "any_selected": [
+            "fever",
+            "cough",
+            "dyspnea"
+          ],
+          "missing_if": []
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "小児",
+          "高齢者",
+          "妊娠",
+          "基礎疾患",
+          "免疫低下"
+        ],
+        "normalized_terms_en": [
+          "child",
+          "older adult",
+          "pregnant",
+          "chronic condition",
+          "immunocompromised"
+        ],
+        "blocked_terms": [
+          "個別診断",
+          "薬の用量"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P1-RISK-GROUP-WITH-DYSPNEA",
+          "RF-P2-RISK-GROUP-FEVER-COUGH"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "risk_context",
+          "seek_care_guidance"
+        ],
+        "source_hints": [
+          "us.medlineplus",
+          "us.cdc",
+          "jp.mhlw"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "medium"
+      },
+      "aliases": [
+        "child_or_pregnant"
+      ]
+    },
+    {
+      "card_id": "duration",
+      "status": "active",
+      "category": "context",
+      "ui": {
+        "label_ja": "いつから",
+        "short_label_ja": "期間",
+        "group": "context",
+        "sort_order": 160,
+        "visible_default": false,
+        "illustration_key": "calendar_duration",
+        "icon_hint": "カレンダー",
+        "accessibility_label_ja": "症状がいつから続くかの確認カード",
+        "helper_text_ja": "分からない場合はわからないを選べます。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "hours_0_24",
+            "label_ja": "24時間以内",
+            "severity_rank": 1,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "days_1_3",
+            "label_ja": "1〜3日",
+            "severity_rank": 1,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "days_4_plus",
+            "label_ja": "4日以上",
+            "severity_rank": 2,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "weeks",
+            "label_ja": "数週間",
+            "severity_rank": 2,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 1,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 10,
+        "initial_prompt_ja": "症状はいつから続いていますか？",
+        "followup_prompt_ja": "発熱や咳はいつからですか？",
+        "answer_style": "segmented",
+        "max_visible_options": 5,
+        "ask_when": {
+          "any_selected": [
+            "fever",
+            "cough"
+          ],
+          "missing_if": [
+            "duration=unknown"
+          ]
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "期間",
+          "いつから",
+          "継続"
+        ],
+        "normalized_terms_en": [
+          "duration",
+          "onset timing"
+        ],
+        "blocked_terms": [
+          "予後断定"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P1-HIGH-FEVER-WORSENING",
+          "RF-P2-FEVER-COUGH-DURATION",
+          "RF-P2-FEVER-UNKNOWN-DURATION"
+        ],
+        "safety_question": false
+      },
+      "retrieval": {
+        "evidence_types": [
+          "self_observation",
+          "seek_care_guidance"
+        ],
+        "source_hints": [
+          "us.medlineplus.er_adult"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "worsening",
+      "status": "active",
+      "category": "context",
+      "ui": {
+        "label_ja": "悪化している",
+        "short_label_ja": "悪化",
+        "group": "context",
+        "sort_order": 170,
+        "visible_default": false,
+        "illustration_key": "trend_worse",
+        "icon_hint": "上向き警告矢印",
+        "accessibility_label_ja": "症状が悪化しているかの確認カード",
+        "helper_text_ja": "急に悪くなっている場合は安全側に扱います。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "yes",
+            "label_ja": "悪化している",
+            "severity_rank": 2,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "no",
+            "label_ja": "悪化していない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 1,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 9,
+        "initial_prompt_ja": "症状は悪化していますか？",
+        "followup_prompt_ja": "時間とともに悪くなっていますか？",
+        "answer_style": "yes_no_unknown",
+        "max_visible_options": 3,
+        "ask_when": {
+          "any_selected": [
+            "fever",
+            "cough",
+            "dyspnea"
+          ],
+          "missing_if": []
+        },
+        "skip_allowed": true
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "悪化",
+          "急な悪化"
+        ],
+        "normalized_terms_en": [
+          "worsening",
+          "getting worse"
+        ],
+        "blocked_terms": [
+          "受診不要判断"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": null,
+        "connected_rule_ids": [
+          "RF-P1-TROUBLE-BREATHING-WITH-FEVER",
+          "RF-P1-HIGH-FEVER-WORSENING",
+          "RF-P2-MILD-DYSPNEA",
+          "RF-P2-WORSENING-NON-P0"
+        ],
+        "safety_question": false
+      },
+      "retrieval": {
+        "evidence_types": [
+          "seek_care_guidance",
+          "self_observation"
+        ],
+        "source_hints": [
+          "us.medlineplus.er_adult"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "low"
+      }
+    },
+    {
+      "card_id": "self_harm",
+      "status": "active",
+      "category": "safety",
+      "ui": {
+        "label_ja": "自分や他人を傷つけそう",
+        "short_label_ja": "危機",
+        "group": "mental_health",
+        "sort_order": 0,
+        "visible_default": false,
+        "illustration_key": "crisis_help",
+        "icon_hint": "危機相談アイコン",
+        "accessibility_label_ja": "自分や他人を傷つけそうな危機の確認カード",
+        "helper_text_ja": "該当する場合は地域の緊急窓口へつなぎます。"
+      },
+      "input": {
+        "value_type": "enum",
+        "default_value": "unknown",
+        "unknown_allowed": true,
+        "values": [
+          {
+            "value": "yes",
+            "label_ja": "ある",
+            "severity_rank": 4,
+            "counts_as_present": true,
+            "is_unknown": false
+          },
+          {
+            "value": "no",
+            "label_ja": "ない",
+            "severity_rank": 0,
+            "counts_as_present": false,
+            "is_unknown": false
+          },
+          {
+            "value": "unknown",
+            "label_ja": "わからない",
+            "severity_rank": 2,
+            "counts_as_present": false,
+            "is_unknown": true
+          }
+        ]
+      },
+      "question": {
+        "ask_priority": 0,
+        "initial_prompt_ja": "自分や他人を傷つけそうな危機がありますか？",
+        "followup_prompt_ja": "今すぐ安全確保が必要ですか？",
+        "answer_style": "yes_no_unknown",
+        "max_visible_options": 3,
+        "ask_when": {
+          "any_selected": [],
+          "missing_if": []
+        },
+        "skip_allowed": false
+      },
+      "normalization": {
+        "normalized_terms_ja": [
+          "自傷",
+          "他害",
+          "危機"
+        ],
+        "normalized_terms_en": [
+          "self harm",
+          "harm others",
+          "crisis"
+        ],
+        "blocked_terms": [
+          "方法",
+          "手段"
+        ]
+      },
+      "red_flag": {
+        "directly_sets_priority": "P0",
+        "connected_rule_ids": [
+          "RF-P0-SELF-HARM"
+        ],
+        "safety_question": true
+      },
+      "retrieval": {
+        "evidence_types": [
+          "emergency_sign"
+        ],
+        "source_hints": [
+          "local.crisis_resource"
+        ]
+      },
+      "privacy": {
+        "stores_raw_text": false,
+        "pii_risk": "high"
+      }
+    }
+  ]
+}

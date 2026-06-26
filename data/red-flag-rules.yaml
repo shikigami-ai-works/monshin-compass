@@ -1,0 +1,802 @@
+{
+  "schema_version": "0.1.0",
+  "format_note": "JSON-compatible YAML subset; parseable by YAML parsers and Python stdlib json.",
+  "product": "monshin-compass",
+  "scope": "fever_cough_dyspnea_mvp",
+  "created_at": "2026-06-25",
+  "medical_safety_boundary": {
+    "not_diagnosis": true,
+    "not_treatment": true,
+    "llm_must_not_decide_red_flags": true,
+    "human_medical_judgment_required": true
+  },
+  "priority_order": [
+    "P0",
+    "P1",
+    "P2",
+    "P3"
+  ],
+  "priorities": [
+    {
+      "priority": "P0",
+      "rank": 0,
+      "meaning": "possible immediate emergency",
+      "default_display_block": "p0_emergency_help",
+      "default_evidence_types": [
+        "emergency_sign"
+      ]
+    },
+    {
+      "priority": "P1",
+      "rank": 1,
+      "meaning": "urgent medical advice recommended",
+      "default_display_block": "p1_seek_medical_advice",
+      "default_evidence_types": [
+        "seek_care_guidance",
+        "emergency_sign"
+      ]
+    },
+    {
+      "priority": "P2",
+      "rank": 2,
+      "meaning": "medical consultation or extra safety question should be considered",
+      "default_display_block": "p2_followup_or_more_input",
+      "default_evidence_types": [
+        "seek_care_guidance",
+        "symptom_overview"
+      ]
+    },
+    {
+      "priority": "P3",
+      "rank": 3,
+      "meaning": "self observation with escalation conditions",
+      "default_display_block": "p3_observation_with_escalation",
+      "default_evidence_types": [
+        "symptom_overview",
+        "self_observation"
+      ]
+    }
+  ],
+  "evaluation": {
+    "higher_priority_wins": true,
+    "collect_all_matches_in_winning_priority": true,
+    "needs_more_input_when_critical_safety_unknown": true,
+    "condition_runtime": "tools/validate_symptom_cards.py:RULE_CONDITIONS"
+  },
+  "rules": [
+    {
+      "rule_id": "RF-P0-DYSPNEA-SEVERE",
+      "priority": "P0",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P0-DYSPNEA-SEVERE",
+        "expression": "dyspnea == severe"
+      },
+      "card_ids": [
+        "dyspnea"
+      ],
+      "action_code": "call_emergency_or_local_urgent_help",
+      "evidence_type": "emergency_sign",
+      "display_block": "p0_emergency_help",
+      "source_requirements": [
+        "jp.fdma.ambulance_manual",
+        "jp.fdma.qsuke",
+        "jp.mhlw.7119_adult"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P0-CYANOSIS",
+      "priority": "P0",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P0-CYANOSIS",
+        "expression": "cyanosis == yes"
+      },
+      "card_ids": [
+        "cyanosis"
+      ],
+      "action_code": "call_emergency_or_local_urgent_help",
+      "evidence_type": "emergency_sign",
+      "display_block": "p0_emergency_help",
+      "source_requirements": [
+        "jp.fdma.ambulance_manual",
+        "jp.fdma.qsuke",
+        "jp.mhlw.7119_adult"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P0-UNABLE-WAKE",
+      "priority": "P0",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P0-UNABLE-WAKE",
+        "expression": "unable_to_wake == yes"
+      },
+      "card_ids": [
+        "unable_to_wake"
+      ],
+      "action_code": "call_emergency_or_local_urgent_help",
+      "evidence_type": "emergency_sign",
+      "display_block": "p0_emergency_help",
+      "source_requirements": [
+        "jp.fdma.ambulance_manual",
+        "jp.fdma.qsuke",
+        "jp.mhlw.7119_adult"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P0-CONFUSION-ACUTE",
+      "priority": "P0",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P0-CONFUSION-ACUTE",
+        "expression": "confusion == yes AND sudden_onset == yes"
+      },
+      "card_ids": [
+        "confusion",
+        "sudden_onset"
+      ],
+      "action_code": "call_emergency_or_local_urgent_help",
+      "evidence_type": "emergency_sign",
+      "display_block": "p0_emergency_help",
+      "source_requirements": [
+        "jp.fdma.ambulance_manual",
+        "jp.fdma.qsuke",
+        "jp.mhlw.7119_adult"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P0-CHEST-SEVERE",
+      "priority": "P0",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P0-CHEST-SEVERE",
+        "expression": "chest_pain IN [severe, pressure]"
+      },
+      "card_ids": [
+        "chest_pain"
+      ],
+      "action_code": "call_emergency_or_local_urgent_help",
+      "evidence_type": "emergency_sign",
+      "display_block": "p0_emergency_help",
+      "source_requirements": [
+        "jp.fdma.ambulance_manual",
+        "jp.fdma.qsuke",
+        "jp.mhlw.7119_adult"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P0-BLOOD-HEAVY",
+      "priority": "P0",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P0-BLOOD-HEAVY",
+        "expression": "blood == heavy"
+      },
+      "card_ids": [
+        "blood"
+      ],
+      "action_code": "call_emergency_or_local_urgent_help",
+      "evidence_type": "emergency_sign",
+      "display_block": "p0_emergency_help",
+      "source_requirements": [
+        "jp.fdma.ambulance_manual",
+        "jp.fdma.qsuke",
+        "jp.mhlw.7119_adult"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P0-FAINTING",
+      "priority": "P0",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P0-FAINTING",
+        "expression": "fainting == yes AND (dyspnea present OR chest_pain present OR confusion == yes)"
+      },
+      "card_ids": [
+        "fainting",
+        "dyspnea",
+        "chest_pain",
+        "confusion"
+      ],
+      "action_code": "call_emergency_or_local_urgent_help",
+      "evidence_type": "emergency_sign",
+      "display_block": "p0_emergency_help",
+      "source_requirements": [
+        "jp.fdma.ambulance_manual",
+        "jp.fdma.qsuke",
+        "jp.mhlw.7119_adult"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P0-SEIZURE-PROLONGED",
+      "priority": "P0",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P0-SEIZURE-PROLONGED",
+        "expression": "seizure IN [prolonged, repeated]"
+      },
+      "card_ids": [
+        "seizure"
+      ],
+      "action_code": "call_emergency_or_local_urgent_help",
+      "evidence_type": "emergency_sign",
+      "display_block": "p0_emergency_help",
+      "source_requirements": [
+        "jp.fdma.ambulance_manual",
+        "jp.fdma.qsuke",
+        "jp.mhlw.7119_adult"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P0-SUDDEN-NEURO",
+      "priority": "P0",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P0-SUDDEN-NEURO",
+        "expression": "sudden_onset == yes AND (confusion == yes OR severe_pain == sudden_severe)"
+      },
+      "card_ids": [
+        "sudden_onset",
+        "confusion",
+        "severe_pain"
+      ],
+      "action_code": "call_emergency_or_local_urgent_help",
+      "evidence_type": "emergency_sign",
+      "display_block": "p0_emergency_help",
+      "source_requirements": [
+        "jp.fdma.ambulance_manual",
+        "jp.fdma.qsuke",
+        "jp.mhlw.7119_adult"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P0-SELF-HARM",
+      "priority": "P0",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P0-SELF-HARM",
+        "expression": "self_harm == yes"
+      },
+      "card_ids": [
+        "self_harm"
+      ],
+      "action_code": "crisis_line_and_emergency_help",
+      "evidence_type": "emergency_sign",
+      "display_block": "p0_emergency_help",
+      "source_requirements": [
+        "jp.mhlw.mamorouyokokoro_tel",
+        "jp.fdma.ambulance_manual"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P1-DYSPNEA-MODERATE",
+      "priority": "P1",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P1-DYSPNEA-MODERATE",
+        "expression": "dyspnea == moderate"
+      },
+      "card_ids": [
+        "dyspnea"
+      ],
+      "action_code": "seek_urgent_medical_advice",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p1_seek_medical_advice",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.fdma.qsuke"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P1-TROUBLE-BREATHING-WITH-FEVER",
+      "priority": "P1",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P1-TROUBLE-BREATHING-WITH-FEVER",
+        "expression": "fever == yes AND dyspnea == mild AND worsening == yes"
+      },
+      "card_ids": [
+        "fever",
+        "dyspnea",
+        "worsening"
+      ],
+      "action_code": "seek_urgent_medical_advice",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p1_seek_medical_advice",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.fdma.qsuke"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P1-CHEST-MODERATE",
+      "priority": "P1",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P1-CHEST-MODERATE",
+        "expression": "chest_pain == moderate"
+      },
+      "card_ids": [
+        "chest_pain"
+      ],
+      "action_code": "seek_urgent_medical_advice",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p1_seek_medical_advice",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.fdma.qsuke"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P1-BLOOD-SPUTUM-VOMIT",
+      "priority": "P1",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P1-BLOOD-SPUTUM-VOMIT",
+        "expression": "blood IN [sputum, vomit]"
+      },
+      "card_ids": [
+        "blood",
+        "cough"
+      ],
+      "action_code": "seek_urgent_medical_advice",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p1_seek_medical_advice",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.fdma.qsuke"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P1-FEVER-STIFF-NECK",
+      "priority": "P1",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P1-FEVER-STIFF-NECK",
+        "expression": "fever == yes AND stiff_neck == yes"
+      },
+      "card_ids": [
+        "fever",
+        "stiff_neck"
+      ],
+      "action_code": "seek_urgent_medical_advice",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p1_seek_medical_advice",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.fdma.qsuke"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P1-HIGH-FEVER-WORSENING",
+      "priority": "P1",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P1-HIGH-FEVER-WORSENING",
+        "expression": "fever == yes AND worsening == yes AND duration == days_4_plus"
+      },
+      "card_ids": [
+        "fever",
+        "worsening",
+        "duration"
+      ],
+      "action_code": "seek_urgent_medical_advice",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p1_seek_medical_advice",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.fdma.qsuke"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P1-PERSISTENT-VOMIT-DIARRHEA",
+      "priority": "P1",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P1-PERSISTENT-VOMIT-DIARRHEA",
+        "expression": "vomiting_diarrhea IN [persistent, severe]"
+      },
+      "card_ids": [
+        "vomiting_diarrhea"
+      ],
+      "action_code": "seek_urgent_medical_advice",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p1_seek_medical_advice",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.fdma.qsuke"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P1-DEHYDRATION",
+      "priority": "P1",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P1-DEHYDRATION",
+        "expression": "dehydration_signs == yes"
+      },
+      "card_ids": [
+        "dehydration_signs"
+      ],
+      "action_code": "seek_urgent_medical_advice",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p1_seek_medical_advice",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.fdma.qsuke"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P1-SEVERE-PAIN",
+      "priority": "P1",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P1-SEVERE-PAIN",
+        "expression": "severe_pain == severe"
+      },
+      "card_ids": [
+        "severe_pain"
+      ],
+      "action_code": "seek_urgent_medical_advice",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p1_seek_medical_advice",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.fdma.qsuke"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P1-RISK-GROUP-WITH-DYSPNEA",
+      "priority": "P1",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P1-RISK-GROUP-WITH-DYSPNEA",
+        "expression": "risk_group present AND dyspnea present"
+      },
+      "card_ids": [
+        "risk_group",
+        "dyspnea"
+      ],
+      "action_code": "seek_urgent_medical_advice",
+      "evidence_type": "risk_context",
+      "display_block": "p1_seek_medical_advice",
+      "source_requirements": [
+        "jp.mhlw.child_8000",
+        "jp.fdma.ambulance_manual"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P2-FEVER-COUGH-DURATION",
+      "priority": "P2",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P2-FEVER-COUGH-DURATION",
+        "expression": "fever == yes AND cough == yes AND duration == days_4_plus"
+      },
+      "card_ids": [
+        "fever",
+        "cough",
+        "duration"
+      ],
+      "action_code": "plan_medical_consult_if_persistent",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p2_followup_or_more_input",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.mhlw.iryou_net"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P2-RISK-GROUP-FEVER-COUGH",
+      "priority": "P2",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P2-RISK-GROUP-FEVER-COUGH",
+        "expression": "risk_group present AND (fever == yes OR cough == yes)"
+      },
+      "card_ids": [
+        "risk_group",
+        "fever",
+        "cough"
+      ],
+      "action_code": "plan_medical_consult_if_persistent",
+      "evidence_type": "risk_context",
+      "display_block": "p2_followup_or_more_input",
+      "source_requirements": [
+        "jp.mhlw.child_8000",
+        "jp.fdma.ambulance_manual",
+        "jp.mhlw.covid_consultation"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P2-MILD-DYSPNEA",
+      "priority": "P2",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P2-MILD-DYSPNEA",
+        "expression": "dyspnea == mild AND worsening != yes"
+      },
+      "card_ids": [
+        "dyspnea",
+        "worsening"
+      ],
+      "action_code": "monitor_and_consult_if_worse",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p2_followup_or_more_input",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.qsuke",
+        "jp.mhlw.covid_consultation"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P2-FEVER-UNKNOWN-DURATION",
+      "priority": "P2",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P2-FEVER-UNKNOWN-DURATION",
+        "expression": "fever == yes AND duration == unknown"
+      },
+      "card_ids": [
+        "fever",
+        "duration"
+      ],
+      "action_code": "ask_duration_then_reclassify",
+      "evidence_type": "self_observation",
+      "display_block": "p2_followup_or_more_input",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.qsuke"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P2-WORSENING-NON-P0",
+      "priority": "P2",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P2-WORSENING-NON-P0",
+        "expression": "worsening == yes AND no P0/P1 rule matched"
+      },
+      "card_ids": [
+        "worsening"
+      ],
+      "action_code": "plan_medical_consult_if_persistent",
+      "evidence_type": "seek_care_guidance",
+      "display_block": "p2_followup_or_more_input",
+      "source_requirements": [
+        "jp.mhlw.7119_adult",
+        "jp.fdma.7119_overview",
+        "jp.mhlw.iryou_net"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P2-UNKNOWN-SAFETY-CARDS",
+      "priority": "P2",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P2-UNKNOWN-SAFETY-CARDS",
+        "expression": "dyspnea == unknown OR chest_pain == unknown OR confusion == unknown OR blood == unknown"
+      },
+      "card_ids": [
+        "dyspnea",
+        "chest_pain",
+        "confusion",
+        "blood"
+      ],
+      "action_code": "ask_one_safety_question",
+      "evidence_type": "unsupported",
+      "display_block": "p2_followup_or_more_input",
+      "source_requirements": [],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P3-MILD-FEVER-COUGH",
+      "priority": "P3",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P3-MILD-FEVER-COUGH",
+        "expression": "fever == yes OR cough == yes, and no P0/P1/P2 rule matched"
+      },
+      "card_ids": [
+        "fever",
+        "cough"
+      ],
+      "action_code": "self_observe_with_escalation_conditions",
+      "evidence_type": "symptom_overview",
+      "display_block": "p3_observation_with_escalation",
+      "source_requirements": [
+        "jp.fdma.qsuke",
+        "jp.mhlw.covid_consultation"
+      ],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P3-NO-PRIMARY-SYMPTOM",
+      "priority": "P3",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P3-NO-PRIMARY-SYMPTOM",
+        "expression": "fever == no AND cough == no AND dyspnea == none"
+      },
+      "card_ids": [
+        "fever",
+        "cough",
+        "dyspnea"
+      ],
+      "action_code": "ask_primary_symptom",
+      "evidence_type": "unsupported",
+      "display_block": "p3_observation_with_escalation",
+      "source_requirements": [],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    },
+    {
+      "rule_id": "RF-P3-UNKNOWN-ONLY",
+      "priority": "P3",
+      "condition": {
+        "language": "validator_builtin_v1",
+        "implementation_key": "RF-P3-UNKNOWN-ONLY",
+        "expression": "all selected cards are unknown and no symptom severity is selected"
+      },
+      "card_ids": [
+        "all"
+      ],
+      "action_code": "ask_one_safety_question",
+      "evidence_type": "unsupported",
+      "display_block": "p3_observation_with_escalation",
+      "source_requirements": [],
+      "forbidden_output": [
+        "diagnosis",
+        "treatment",
+        "reassurance_no_care_needed"
+      ]
+    }
+  ]
+}

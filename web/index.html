@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Monshin Compass is a deterministic symptom action compass prototype for next-action guidance."
+    >
+    <title>Monshin Compass</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#appTitle">本文へ移動</a>
+
+    <main class="page-shell" aria-label="Monshin Compass">
+      <section class="phone-app" aria-live="polite">
+        <header class="app-header">
+          <button id="backIconButton" class="icon-button" type="button" aria-label="戻る">
+            <span aria-hidden="true">‹</span>
+          </button>
+
+          <div class="brand-lockup">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <div>
+              <p class="brand-name">Monshin Compass</p>
+              <p id="headerContext" class="header-context">症状アクション案内</p>
+            </div>
+          </div>
+
+          <button id="menuButton" class="icon-button" type="button" aria-label="メニュー" aria-expanded="false" aria-controls="menuPanel">
+            <span aria-hidden="true">☰</span>
+          </button>
+        </header>
+
+        <aside id="menuPanel" class="menu-panel" hidden>
+          <button id="menuEmergencyButton" type="button">いま緊急かもしれない</button>
+          <button id="menuReviewButton" type="button">回答を確認</button>
+          <button id="menuSettingsButton" type="button">地域・ヘルプ</button>
+          <button id="menuRestartButton" type="button">最初からやり直す</button>
+        </aside>
+
+        <section id="launchScreen" class="screen launch-screen" data-screen="launch" aria-labelledby="appTitle">
+          <div class="launch-symbol" aria-hidden="true">
+            <span></span>
+          </div>
+          <p class="screen-kicker">症状アクションコンパス</p>
+          <h1 id="appTitle">Monshin Compass</h1>
+          <p class="lead-copy">
+            いくつかの安全確認に答えて、次に取る行動を整理します。診断や治療の判断は行いません。
+          </p>
+          <div class="primary-stack">
+            <button id="startButton" class="primary-button" type="button">はじめる</button>
+            <button id="launchEmergencyButton" class="danger-button" type="button">強い症状がある</button>
+          </div>
+          <p class="boundary-note">強い息苦しさ、胸の強い痛み、意識の変化、急な悪化がある場合は 119 を優先してください。</p>
+        </section>
+
+        <section id="regionScreen" class="screen region-screen" data-screen="region" aria-labelledby="regionTitle" hidden>
+          <p class="screen-kicker">地域確認</p>
+          <h2 id="regionTitle">相談先の表示に使う地域を確認します</h2>
+          <p class="lead-copy">
+            #7119 は全国共通で必ず使える番号ではありません。地域が確認できる場合だけ、直接番号として表示します。
+          </p>
+
+          <div class="choice-list" role="radiogroup" aria-label="地域">
+            <button class="choice-card" type="button" data-locale-choice="JP-13" aria-pressed="true">
+              <strong>Tokyo / JP-13</strong>
+              <span>東京で #7119 の表示を許可する</span>
+            </button>
+            <button class="choice-card" type="button" data-locale-choice="JP" aria-pressed="false">
+              <strong>Japan / area unconfirmed</strong>
+              <span>地域未確認として、直接番号は出さない</span>
+            </button>
+          </div>
+
+          <div class="bottom-actions">
+            <button id="confirmRegionButton" class="primary-button" type="button">この地域で続ける</button>
+            <button id="regionEmergencyButton" class="plain-button" type="button">119 を優先する症状がある</button>
+          </div>
+        </section>
+
+        <section id="questionScreen" class="screen question-screen" data-screen="question" aria-labelledby="questionTitle" hidden>
+          <div class="progress-block" aria-label="進行状況">
+            <output id="progressText">1 / 7</output>
+            <div id="progressDots" class="progress-dots" aria-hidden="true"></div>
+          </div>
+
+          <article class="question-card">
+            <div class="card-topline">
+              <span id="questionCategory" class="category-pill">安全確認</span>
+              <span id="questionStatus" class="answer-state">未回答</span>
+            </div>
+            <div id="questionArt" class="question-art" aria-hidden="true"></div>
+            <h2 id="questionTitle"></h2>
+            <p id="questionHelp" class="question-help"></p>
+          </article>
+
+          <div id="answerList" class="answer-list" aria-label="回答"></div>
+          <div class="question-secondary">
+            <button id="questionBackButton" class="plain-button" type="button">戻る</button>
+            <button id="questionEmergencyButton" class="plain-danger-button" type="button">緊急</button>
+          </div>
+        </section>
+
+        <section id="safetyScreen" class="screen safety-screen" data-screen="safety" aria-labelledby="safetyTitle" hidden>
+          <p class="screen-kicker danger-text">安全確認</p>
+          <h2 id="safetyTitle">下げて判断する前に、強い症状だけ確認します</h2>
+          <p id="safetyReason" class="lead-copy"></p>
+          <div id="safetyAnswers" class="answer-list"></div>
+          <div class="bottom-actions">
+            <button id="safetyBackButton" class="plain-button" type="button">前の質問へ戻る</button>
+            <button id="safetyEmergencyButton" class="danger-button" type="button">119 を優先する</button>
+          </div>
+        </section>
+
+        <section id="resultScreen" class="screen result-screen" data-screen="result" aria-labelledby="resultTitle" hidden>
+          <div id="priorityBanner" class="priority-banner">
+            <span id="priorityBadge" class="priority-badge">P-</span>
+            <span id="priorityLabel">判定待ち</span>
+          </div>
+          <h2 id="resultTitle"></h2>
+          <p id="routeBlock" class="route-block"></p>
+
+          <section class="safety-boundary" aria-labelledby="boundaryTitle">
+            <h3 id="boundaryTitle">安全境界</h3>
+            <p>この画面は診断や治療ではありません。強い症状や急な悪化がある場合は、表示中の結果より 119 を優先してください。</p>
+          </section>
+
+          <section class="compact-section" aria-labelledby="reasonTitle">
+            <h3 id="reasonTitle">理由の要約</h3>
+            <ul id="reasonList" class="info-list"></ul>
+          </section>
+
+          <section class="compact-section" aria-labelledby="memoTitle">
+            <h3 id="memoTitle">回答メモ</h3>
+            <ul id="answerMemoList" class="info-list"></ul>
+          </section>
+
+          <div class="bottom-actions">
+            <button id="resultReviewButton" class="primary-button" type="button">回答を見直す</button>
+            <button id="resultEvidenceButton" class="plain-button" type="button">根拠を見る</button>
+            <button id="resultRestartButton" class="plain-button" type="button">最初から</button>
+          </div>
+        </section>
+
+        <section id="evidenceScreen" class="screen evidence-screen" data-screen="evidence" aria-labelledby="evidenceTitle" hidden>
+          <p class="screen-kicker">根拠・ソース</p>
+          <h2 id="evidenceTitle">優先度は決定ルールで出しています</h2>
+          <p class="lead-copy">外部ソースは案内文と境界説明の補助です。未レビューの本文は保存・埋め込み・RAG chunk 化しません。</p>
+          <div id="sourceCards" class="source-cards"></div>
+          <details class="raw-details">
+            <summary>監査用 JSON</summary>
+            <pre id="rawOutput"></pre>
+          </details>
+          <div class="bottom-actions">
+            <button id="evidenceBackButton" class="primary-button" type="button">結果へ戻る</button>
+          </div>
+        </section>
+
+        <section id="settingsScreen" class="screen settings-screen" data-screen="settings" aria-labelledby="settingsTitle" hidden>
+          <p class="screen-kicker">設定・ヘルプ</p>
+          <h2 id="settingsTitle">地域と制限</h2>
+          <label class="field-label" for="localeSelect">地域</label>
+          <select id="localeSelect" class="select-field">
+            <option value="JP-13">Tokyo / JP-13</option>
+            <option value="JP">Japan / area unconfirmed</option>
+          </select>
+          <div class="help-panel">
+            <h3>できること</h3>
+            <p>回答から次の行動方向を整理します。P0/P1/P2/P3 はローカルの決定ルールで出します。</p>
+            <h3>できないこと</h3>
+            <p>診断、治療、薬、用量、受診不要の判断は行いません。</p>
+          </div>
+          <div class="bottom-actions">
+            <button id="settingsApplyButton" class="primary-button" type="button">地域を反映</button>
+            <button id="settingsRestartButton" class="plain-button" type="button">最初からやり直す</button>
+            <button id="settingsBackButton" class="plain-button" type="button">戻る</button>
+          </div>
+        </section>
+
+        <section id="reviewScreen" class="screen review-screen" data-screen="review" aria-labelledby="reviewTitle" hidden>
+          <p class="screen-kicker">回答確認</p>
+          <h2 id="reviewTitle">回答を見直す</h2>
+          <div id="reviewList" class="review-list"></div>
+          <div class="bottom-actions">
+            <button id="reviewResultButton" class="primary-button" type="button">結果へ戻る</button>
+            <button id="reviewRestartButton" class="plain-button" type="button">最初から</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
