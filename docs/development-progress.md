@@ -2,10 +2,10 @@
 
 ## Current Status
 
-- Progress ID: `MONSHIN-PROGRESS-0006`
-- Date: 2026-06-25
+- Progress ID: `MONSHIN-PROGRESS-0007`
+- Date: 2026-06-26
 - Project: `D:\monshin-compass`
-- Branch / Git state: not a Git repository at checkpoint time
+- Branch / Git state: `main` tracks `origin/main`; repository published to `https://github.com/shikigami-ai-works/monshin-compass`
 - Active scope: ASOCFULL 20-ticket smartphone app shell implementation
 - Current UI source of truth: `docs/smartphone-app-screen-spec.md`
 - Current Web UI status: rebuilt smartphone app shell; runtime browser QA not completed due browser policy blocker
@@ -13,6 +13,11 @@
 
 ## Completed Since Last Checkpoint
 
+- Completed publication checkpoint:
+  - initialized Git repository on `main`
+  - added `.gitattributes`, `.gitignore`, and `README.md`
+  - excluded local runtime evidence, browser profiles, logs, and Python cache files from source Git
+  - pushed source tree to `origin/main`
 - Completed T01: rebuilt HTML app shell with required screens.
 - Completed T02: added readable Japanese UI copy layer in `web/app.js`.
 - Completed T03: added app state model and screen router.
@@ -38,9 +43,9 @@
 
 ## Current Working State
 
-- Pushed: none; project is not currently a Git repository.
-- Local committed: none.
-- Uncommitted: all files under `D:\monshin-compass` are plain filesystem artifacts.
+- Pushed: source tree and publication checkpoint to `origin/main`.
+- Local committed: `main` tracks `origin/main`.
+- Uncommitted: none expected except ignored local runtime/cache directories.
 - Runtime files changed in this checkpoint:
   - `web/index.html`
   - `web/styles.css`
@@ -83,7 +88,7 @@
   - `python tools\evaluate_symptom_case.py --root D:\monshin-compass --locale JP-13 --fixture SCHEMA-TC-002`
   - source scan found no `href="#"`, `javascript:void`, `console.log`, `TODO`, or inline `onclick=` controls in `web/`
 - Failed:
-  - `git status --short` fails because `D:\monshin-compass` is not a Git repository
+  - none in the publication checkpoint
 - Blocked:
   - in-app browser runtime rejected `http://127.0.0.1:8765/`
   - no screenshot evidence was captured in this pass
@@ -97,7 +102,7 @@
 ## Blockers / Risks
 
 - Browser policy currently blocks localhost UI verification for this target URL.
-- The project is still not a Git repository, so there is no branch/commit history or source push path.
+- Git publication is now established, but future commits must continue excluding runtime browser profiles and bulky local evidence.
 - Runtime UI may still have layout issues that static checks cannot reveal.
 - Source/data mojibake still exists in fixture/data layers; UI avoids it, but future copy work must keep that boundary.
 - Medical professional review and rights/legal review remain future work.
