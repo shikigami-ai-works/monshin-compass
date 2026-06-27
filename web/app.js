@@ -260,6 +260,20 @@ function showScreen(name, options = {}) {
   els.backIconButton.disabled = name === "launch";
   closeMenu();
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  focusScreenHeading(name);
+}
+
+function focusScreenHeading(name) {
+  const screen = screens[name];
+  const headingId = screen?.getAttribute("aria-labelledby");
+  const heading = headingId ? document.getElementById(headingId) : null;
+  if (!heading) {
+    return;
+  }
+  if (!heading.hasAttribute("tabindex")) {
+    heading.setAttribute("tabindex", "-1");
+  }
+  heading.focus({ preventScroll: true });
 }
 
 function screenContext(name) {
@@ -499,14 +513,17 @@ function sourceCard(record) {
   const article = document.createElement("article");
   article.className = "source-card";
   const title = document.createElement(record.url ? "a" : "strong");
-  title.textContent = record.title || record.source_id;
+  const sourceTitle = record.title || record.source_id;
+  const sourcePublisher = record.publisher || "publisher unknown";
+  title.textContent = sourceTitle;
   if (record.url) {
     title.href = record.url;
     title.target = "_blank";
     title.rel = "noopener noreferrer";
+    title.setAttribute("aria-label", `${sourceTitle} / ${sourcePublisher} / ${record.url}`);
   }
   const publisher = document.createElement("small");
-  publisher.textContent = `${record.publisher || "publisher unknown"} / retrieved=${record.retrieved_at || "unknown"} / raw_rag_ingest_allowed=${record.raw_rag_ingest_allowed}`;
+  publisher.textContent = `${sourcePublisher} / retrieved=${record.retrieved_at || "unknown"} / raw_rag_ingest_allowed=${record.raw_rag_ingest_allowed}`;
   article.append(title, publisher);
   return article;
 }
@@ -575,16 +592,18 @@ function renderReview() {
     const label = document.createElement("strong");
     label.textContent = cardCopy[question.cardId] || question.cardId;
     const value = document.createElement("p");
-    value.textContent = state.selected[question.cardId]
+    const currentValue = state.selected[question.cardId]
       ? valueCopy[state.selected[question.cardId]] || state.selected[question.cardId]
       : state.skipped.has(question.cardId)
         ? "スキップ"
         : "未回答";
+    value.textContent = currentValue;
     value.style.margin = "4px 0 0";
     content.append(label, value);
     const edit = document.createElement("button");
     edit.type = "button";
     edit.textContent = "編集";
+    edit.setAttribute("aria-label", `${label.textContent}を編集。現在: ${currentValue}`);
     edit.addEventListener("click", () => {
       state.questionIndex = index;
       showQuestion();
