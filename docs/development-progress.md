@@ -2,58 +2,64 @@
 
 ## Current Status
 
-- Progress ID: `MONSHIN-PROGRESS-0007`
+- Progress ID: `MONSHIN-PROGRESS-0008`
 - Date: 2026-06-26
 - Project: `D:\monshin-compass`
-- Branch / Git state: `main` tracks `origin/main`; repository published to `https://github.com/shikigami-ai-works/monshin-compass`
-- Active scope: ASOCFULL 20-ticket smartphone app shell implementation
+- Branch / Git state: `main` tracks `origin/main`; Git push gate opened by Shiki for this runtime UI checkpoint
+- Active scope: ASOCFULL runtime UI verification, targeted smartphone app shell fix, and Git publication
 - Current UI source of truth: `docs/smartphone-app-screen-spec.md`
-- Current Web UI status: rebuilt smartphone app shell; runtime browser QA not completed due browser policy blocker
+- Current Web UI status: smartphone app shell runtime-confirmed in bundled Node Playwright; real-device and assistive-technology checks not completed
 - Local dev URL when server is running: `http://127.0.0.1:8765/`
 
 ## Completed Since Last Checkpoint
 
-- Completed publication checkpoint:
-  - initialized Git repository on `main`
-  - added `.gitattributes`, `.gitignore`, and `README.md`
-  - excluded local runtime evidence, browser profiles, logs, and Python cache files from source Git
-  - pushed source tree to `origin/main`
-- Completed T01: rebuilt HTML app shell with required screens.
-- Completed T02: added readable Japanese UI copy layer in `web/app.js`.
-- Completed T03: added app state model and screen router.
-- Completed T04: implemented Launch screen.
-- Completed T05: implemented Region Confirmation screen.
-- Completed T06: implemented Question Card flow.
-- Completed T07: implemented Safety Confirmation interruption.
-- Completed T08: implemented Review Answers screen.
-- Completed T09: implemented Settings / Help screen.
-- Completed T10: implemented Emergency Escape flow.
-- Completed T11: wired evaluator API integration.
-- Completed T12: implemented result/action rendering by priority.
-- Completed T13: implemented Evidence / Source screen.
-- Completed T14: enforced #7119 locale gating in UI copy.
-- Completed T15: rebuilt responsive smartphone-first CSS.
-- Completed T16: added source-level UI interaction audit:
-  - `docs/ui-interaction-audits/UI_INTERACTION_AUDIT_2026-06-25_asocfull-20ticket-source.md`
-- Completed T17: recorded implementation decisions in `docs/implementation-notes.md`.
-- Completed T18: ran static/API/evaluator validation.
-- Blocked T19: runtime browser screenshots/audit.
-  - Browser automation rejected `http://127.0.0.1:8765/` and disallowed workaround through alternate browser surfaces.
-- Completed T20: updated this progress checkpoint.
+- Read the active restart map and layered smartphone app spec.
+- Confirmed Git state before work: `main...origin/main` with no tracked changes at start.
+- Confirmed an allowed runtime verification path using existing bundled Node Playwright dependencies; no install was performed.
+- Added an ignored local runtime audit harness:
+  - `.codex/runtime_ui_audit.cjs`
+- Captured runtime screenshot evidence under ignored output storage:
+  - `outputs/runtime/2026-06-26-runtime-ui-audit/`
+  - 14 screenshots covering 360 / 390 / 430 CSS px widths plus desktop host.
+- Ran runtime browser interaction audit:
+  - 205 checks passed
+  - 0 failed
+  - 0 browser console errors or warnings
+- Verified required runtime paths:
+  - launch flow
+  - region confirmation
+  - question flow
+  - safety confirmation after unknown safety answer
+  - P0 emergency result
+  - P1 Tokyo result with confirmed #7119
+  - P1 Japan / area unconfirmed result without direct #7119 display
+  - evidence/source screen
+  - review/edit/re-evaluate path
+  - settings locale change path
+  - source link new-tab behavior with external response stubbed for audit
+- Found and fixed one runtime UI issue:
+  - Result-to-Evidence navigation preserved body scroll and could clip header controls above the viewport.
+  - `web/app.js` now resets scroll to the top in `showScreen()`.
+- Added runtime-confirmed UI audit:
+  - `docs/ui-interaction-audits/UI_INTERACTION_AUDIT_2026-06-26_asocfull-20ticket-runtime.md`
+- Recorded implementation decision and experience:
+  - `docs/implementation-notes.md`
+- Shiki opened the Git gate for this checkpoint:
+  - staged only intended tracked files
+  - prepared commit/push on `main`
 
 ## Current Working State
 
-- Pushed: source tree and publication checkpoint to `origin/main`.
-- Local committed: `main` tracks `origin/main`.
-- Uncommitted: none expected except ignored local runtime/cache directories.
-- Runtime files changed in this checkpoint:
-  - `web/index.html`
-  - `web/styles.css`
+- Pushed: this checkpoint is intended to be pushed to `origin/main` after commit succeeds.
+- Local committed: pending this checkpoint commit.
+- Tracked changes included in this checkpoint:
   - `web/app.js`
-- Docs changed in this checkpoint:
-  - `docs/ui-interaction-audits/UI_INTERACTION_AUDIT_2026-06-25_asocfull-20ticket-source.md`
+  - `docs/ui-interaction-audits/UI_INTERACTION_AUDIT_2026-06-26_asocfull-20ticket-runtime.md`
   - `docs/implementation-notes.md`
   - `docs/development-progress.md`
+- Ignored/generated local evidence:
+  - `.codex/runtime_ui_audit.cjs`
+  - `outputs/runtime/2026-06-26-runtime-ui-audit/`
 - Safety/core files were not changed:
   - `docs/triage-output-contract.md`
   - `docs/symptom-card-schema.md`
@@ -71,58 +77,52 @@
   - local validators and evaluator tools
   - JP emergency route resolver
 - Keep current `web/` as an implementation of the smartphone app shell, not safety authority.
-- User-facing UI copy is curated in `web/app.js` to avoid displaying mojibake fixture labels.
+- User-facing UI copy remains curated in `web/app.js` to avoid displaying mojibake fixture labels.
 - The UI must not show disease identification, diagnosis ranking, treatment instructions, medication guidance, dosage, or reassurance that care is unnecessary.
 - P0 emergency routing prioritizes `119`.
 - `#7119` direct display requires resolver permission: `consultation_route.show_7119_direct=true` and a consultation phone.
-- Runtime browser QA remains required before claiming final UI verification.
+- Runtime audit harness is local ignored evidence for now, not a committed product test suite.
+- Git gate for this checkpoint is open; stage only intended tracked files and keep ignored evidence out of source Git.
 
 ## Verification
 
 - Passed:
-  - `node --check web\app.js`
-  - `python tools\smoke_api.py`
-  - `python tools\validate_symptom_cards.py --root D:\monshin-compass`
-  - `python tools\resolve_jp_emergency_route.py --root D:\monshin-compass --run-fixtures`
-  - `python tools\evaluate_symptom_case.py --root D:\monshin-compass --locale JP-13 --fixture SCHEMA-TC-001`
-  - `python tools\evaluate_symptom_case.py --root D:\monshin-compass --locale JP-13 --fixture SCHEMA-TC-002`
-  - source scan found no `href="#"`, `javascript:void`, `console.log`, `TODO`, or inline `onclick=` controls in `web/`
+  - `node --check .\web\app.js`
+  - `python .\tools\smoke_api.py`
+  - `python .\tools\validate_symptom_cards.py --root D:\monshin-compass`
+  - `python .\tools\resolve_jp_emergency_route.py --root D:\monshin-compass --run-fixtures`
+  - `python .\tools\evaluate_symptom_case.py --root D:\monshin-compass --locale JP-13 --fixture SCHEMA-TC-001`
+  - `python .\tools\evaluate_symptom_case.py --root D:\monshin-compass --locale JP-13 --fixture SCHEMA-TC-002`
+  - `rg -n -e 'href="#"' -e 'javascript:void' -e 'console\.log' -e 'TODO' -e 'onclick=' web` returned no matches
+  - runtime Playwright audit: 205 pass / 0 fail, 14 screenshots, 0 browser console errors/warnings
+  - visual inspection of key screenshots: launch, P0, P1 Tokyo, P1 area-unconfirmed, Evidence, Review, Settings, desktop host
 - Failed:
-  - none in the publication checkpoint
-- Blocked:
-  - in-app browser runtime rejected `http://127.0.0.1:8765/`
-  - no screenshot evidence was captured in this pass
+  - none after scroll-reset fix
 - Not run:
-  - browser screenshot audit at `360/390/430`
-  - runtime click-through audit
-  - real-device mobile/accessibility testing
+  - real-device mobile testing
+  - screen-reader / assistive-technology runtime pass
   - medical professional review
   - rights/legal review for raw source ingestion
 
 ## Blockers / Risks
 
-- Browser policy currently blocks localhost UI verification for this target URL.
-- Git publication is now established, but future commits must continue excluding runtime browser profiles and bulky local evidence.
-- Runtime UI may still have layout issues that static checks cannot reveal.
+- The previous in-app browser localhost blocker was not retried; this checkpoint used an allowed local Playwright route from bundled dependencies.
+- Runtime UI is now browser-confirmed, but not real-device-confirmed.
+- Screen-reader behavior still needs a dedicated pass.
 - Source/data mojibake still exists in fixture/data layers; UI avoids it, but future copy work must keep that boundary.
 - Medical professional review and rights/legal review remain future work.
+- This checkpoint is prepared for commit/push; ignored evidence must remain out of source Git.
 
 ## Next Best Action
 
-1. Complete runtime UI verification in an allowed browser session:
-   - launch flow
-   - region confirmation
-   - question flow
-   - safety confirmation after unknown safety answer
-   - P0 emergency result
-   - P1 Tokyo result with confirmed #7119
-   - P1 Japan / area unconfirmed result without direct #7119 display
-   - evidence/source screen
-   - review/edit/re-evaluate path
-   - settings locale change path
-2. Capture screenshots at `360`, `390`, and `430` CSS px widths.
-3. Update the UI interaction audit from source-level to runtime-confirmed.
+1. Complete commit and push for the staged runtime-confirmed checkpoint.
+2. After push, verify `main...origin/main` is clean.
+3. If continuing validation after Git, run a focused real-device / accessibility pass:
+   - mobile hardware viewport check
+   - keyboard/focus order check
+   - screen-reader sanity check
+   - manual external source-link confirmation in a normal browser
 
 ## Resume Command
 
-Read `docs/development-progress.md`, then read `docs/smartphone-app-screen-spec.md`. Treat the current `web/` as the active smartphone app shell implementation. Continue with runtime UI verification and screenshot capture only if the browser target is allowed; otherwise keep the browser blocker explicit and do not work around it.
+Read `docs/development-progress.md`, then read `docs/ui-interaction-audits/UI_INTERACTION_AUDIT_2026-06-26_asocfull-20ticket-runtime.md` and `docs/smartphone-app-screen-spec.md`. Inspect `git status --short --branch -uall`. Treat current `web/` as the active smartphone app shell implementation. If the commit/push has completed, continue with focused real-device/accessibility validation when Shiki asks.

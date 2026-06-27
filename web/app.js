@@ -259,6 +259,7 @@ function showScreen(name, options = {}) {
   els.headerContext.textContent = screenContext(name);
   els.backIconButton.disabled = name === "launch";
   closeMenu();
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 }
 
 function screenContext(name) {

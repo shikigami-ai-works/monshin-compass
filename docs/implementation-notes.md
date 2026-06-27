@@ -1,5 +1,44 @@
 # Implementation Notes
 
+## 2026-06-26: Runtime UI Audit And Scroll Reset
+
+Target files:
+
+- `web/app.js`
+- `docs/ui-interaction-audits/UI_INTERACTION_AUDIT_2026-06-26_asocfull-20ticket-runtime.md`
+- `docs/implementation-notes.md`
+- `docs/development-progress.md`
+
+Decision:
+
+1. `showScreen()` now resets window scroll to the top after screen changes.
+   - Reason: runtime Playwright audit found that moving from a scrolled Result screen to Evidence preserved the prior page scroll offset, clipping the header controls above the viewport.
+   - Tradeoff accepted: every app screen transition returns to the top of the new screen instead of preserving scroll position. This matches the smartphone app model better than carrying body scroll across distinct screens.
+   - Impact: Evidence, Review, Settings, and Result transitions start with their header and primary content visible.
+   - Spec update needed later: optional. The current state/flow spec implies screen-level navigation; it does not explicitly name scroll restoration.
+2. Runtime UI verification can use the existing bundled Node Playwright runtime when the target localhost browser path is allowed.
+   - Reason: no install was needed, and the check exercised the actual local server and static/API route.
+   - Tradeoff accepted: `.codex/runtime_ui_audit.cjs` is an ignored local verification harness, not a source-controlled product test suite yet.
+   - Impact: screenshots and JSON evidence were written under ignored `outputs/runtime/2026-06-26-runtime-ui-audit/`.
+   - Spec update needed later: consider promoting the runtime audit harness into a committed test if this UI remains active.
+
+Verification:
+
+- `node --check .\web\app.js`
+- `python .\tools\smoke_api.py`
+- `python .\tools\validate_symptom_cards.py --root D:\monshin-compass`
+- `python .\tools\resolve_jp_emergency_route.py --root D:\monshin-compass --run-fixtures`
+- `python .\tools\evaluate_symptom_case.py --root D:\monshin-compass --locale JP-13 --fixture SCHEMA-TC-001`
+- `python .\tools\evaluate_symptom_case.py --root D:\monshin-compass --locale JP-13 --fixture SCHEMA-TC-002`
+- `rg -n -e 'href="#"' -e 'javascript:void' -e 'console\.log' -e 'TODO' -e 'onclick=' web`
+- Runtime Playwright audit: 205 pass / 0 fail, 14 screenshots, 0 console errors/warnings.
+
+Experience extracted:
+
+- Runtime interaction audits should be allowed to produce small UI fixes; otherwise the audit becomes documentation of known breakage.
+- A screen router owns scroll state as much as visible screen state in a smartphone shell.
+- External evidence links need click behavior verification while still avoiding raw external page ingestion.
+
 ## 2026-06-25: ASOCFULL 20-Ticket Smartphone App Shell Implementation
 
 Target files:
